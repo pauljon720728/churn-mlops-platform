@@ -1,0 +1,34 @@
+services:
+  # 1. Interactive Streamlit Dashboard
+  - type: web
+    name: churnguard-dashboard
+    env: python
+    plan: free
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt"
+    startCommand: "streamlit run app/dashboard.py --server.port $PORT --server.address 0.0.0.0"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: MLFLOW_ALLOW_FILE_STORE
+        value: "true"
+      - key: MLFLOW_DISABLE_AGENT_HINT
+        value: "1"
+
+  # 2. Real-Time FastAPI Inference Engine
+  - type: web
+    name: churnguard-api
+    env: python
+    plan: free
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt"
+    startCommand: "uvicorn api.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
